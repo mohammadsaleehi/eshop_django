@@ -1,0 +1,85 @@
+{% extends 'shared/_layout.html' %}
+{% load render_partial %}
+{% load poll_extreas %}
+
+{% block title %}
+    لیست خرید های من
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                {% render_partial 'user_panel_module.views.user_panel_menu_component' %}
+            </div>
+            {% if object_list|length > 0 %}
+                <div class="col-md-8">
+                    <table class="table table-responsive table-hover table-bordered table-striped">
+                        <tr>
+                            <th class="text-right">شناسه</th>
+                            <th class="text-right">تاریخ تایید فاکتور</th>
+                            <th class="text-right">قیمت نهایی فاکتور</th>
+                            <th class="text-right">وضعیت سفارش</th>
+                            <th class="text-right">دستورات</th>
+                        </tr>
+                        {% for order in object_list %}
+                            <tr>
+                                <td class="text-right">{{ order.id }}</td>
+                                <td class="text-right">{{ order.payment_date|jalali_time:'ساعت : %H:%M  روز : %Y/%m/%d' }}</td>
+                                <td class="text-right">{{ order.calculate_total_final_price|price_como }}ومان</td>
+                                <td class="text-right">{{ order.get_order_position_display }}</td>
+                                <td class="text-right">
+                                    <a href="{% url 'user_shopping_detail_page' order.id %}" class="btn btn-success">جزییات</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                    </table>
+                    {% if paginator.num_pages != 1 %}
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                {% if page_obj.previous_page_number != 1 %}
+                                    <li><a class="curser-pointer"
+                                           href="?page=1">صفحه اول</a></li>
+                                {% endif %}
+                                <li><a class="curser-pointer"
+                                       href="?page={{ page_obj.previous_page_number }}">صفحه قبل</a></li>
+                            {% endif %}
+
+                            {% for page in paginator.page_range %}
+                                {% if page_obj.number == page %}
+                                    <li class="{% if page_obj.number == page %}active{% endif %}">
+                                        <a class="curser-pointer" href="?page={{ page }}">{{ page }}</a>
+                                    </li>
+                                {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
+                                    <li class="{% if page_obj.number == page %}active{% endif %}">
+                                        <a class="curser-pointer" href="?page={{ page }}">{{ page }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li>
+                                    <a class="curser-pointer" href="?page={{ page_obj.next_page_number }}">
+                                        صفحه بعد
+                                    </a>
+                                </li>
+                                {% if paginator.num_pages != page_obj.next_page_number %}
+                                    <li>
+                                        <a class="curser-pointer" href="?page={{ paginator.num_pages }}">
+                                            صفحه آخر
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        </ul>
+                        <p class="text-paginator">صفحه {{ page_obj.number }}از {{ paginator.num_pages }}</p>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="alert alert-warning col-md-8 pull-right">شما تا این لحظه هیچ سفارشی را تایید نهایی نکردید
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

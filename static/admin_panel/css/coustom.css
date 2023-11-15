@@ -1,0 +1,16 @@
+.border-button {
+    border-radius: 13px;
+}
+
+.border-map {
+    border-radius: 35px;
+}
+.top-icon{
+    top: 12px;
+}
+.top-icon-bo{
+    top: -10px;
+}
+.top-icon-fa{
+    top: 20px;
+}

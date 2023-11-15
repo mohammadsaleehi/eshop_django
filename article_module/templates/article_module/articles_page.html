@@ -1,0 +1,177 @@
+{% extends 'shared/_layout.html' %}
+{% load poll_extreas %}
+{% load thumbnail %}
+{% load render_partial %}
+{% load ratings %}
+{% load static %}
+{% load humanize %}
+{% block title %}لیست مقالات{% endblock %}
+{% block header_refernces %}
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+{% endblock %}
+{% block footer_refernces %}
+    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="blog-post-area">
+                        <h2 class="title text-center">
+                            {% if request.GET.order == 'new' or not request.GET.order %}
+                                آخریـن مقالات
+                            {% elif request.GET.order == 'old' %}
+                                قدیمی ترین مقالات
+                            {% elif request.GET.order == 'visited' %}
+                                پربازدیدترین مقالات
+                            {% elif request.GET.order == 'visit_30' %}
+                                پربازدیدترین مقالات ماه گذشته
+                            {% elif request.GET.order == 'popular' %}
+                                محبوب ترین مقالات
+                            {% elif request.GET.order == 'hot' %}
+                                پر بحث ترین مقالات
+                            {% endif %}
+                        </h2>
+                        {% for article in articles %}
+                            <a href="{{ article.get_absolute_url }}">
+                                <div class="single-blog-post">
+                                    <h3>{{ article.title }}</h3>
+                                    <div class="post-meta">
+                                        <ul>
+                                            {% if article.author %}
+                                                <li><i class="fa fa-user"></i> {{ article.author }} </li>
+                                            {% endif %}
+                                            <li>
+{#                                                <i class="fa fa-calendar"></i>{{ article.created|jalali_date:'%Y/%m/%d' }}#}
+                                                <i class="fa fa-calendar"></i>{{ article.created|naturaltime }}
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-clock-o"></i>{{ article.created|jalali_time:'%H:%M' }}
+                                            </li>
+
+                                            <li><i class="fa fa-eye"></i>تعداد بازدید : {{ article.hit_article_view }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="pull-left">{% ratings article read_only='editable' template_name='star_ratings/widget.html' %}</div>
+                                    <a href="{{ article.get_absolute_url }}">
+                                        {% thumbnail article.image '862x398' quality=85 crop='center' padding=True as im %}
+                                            <img src="{{ im.url }}" loading="lazy" alt="{{ article.title }}" height="{{ im.height }}"
+                                                 width="{{ im.width }}">
+                                        {% endthumbnail %}
+                                    </a>
+                                    <p>{{ article.short_description|striptags }}</p>
+                                    <a class="btn btn-primary"
+                                       href="{{ article.get_absolute_url }}">ادامـه
+                                        مطلب</a>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <p class="alert alert-warning">متاسفانه مقاله ای یافت نشد</p>
+                        {% endfor %}
+                        <br>
+                        {% if articles|length != 1 and articles|length != 0 and articles|length != 2 %}
+                            <ul class="pagination">
+                                {% if page_obj.has_previous %}
+                                    {% if page_obj.previous_page_number != 1 %}
+                                        <li><a onclick="fillPageArticle(1)">صفحه اول</a></li>
+                                    {% endif %}
+                                    <li><a onclick="fillPageArticle({{ page_obj.previous_page_number }})">صفحه قبل</a>
+                                    </li>
+                                {% endif %}
+
+                                {% for page in paginator.page_range %}
+                                    {% if page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
+                                        <li class="{% if page_obj.number == page %} active {% endif %}"><a
+                                                class="pagination-number"
+                                                onclick="fillPageArticle({{ page }})">{{ page }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li><a onclick="fillPageArticle({{ page_obj.next_page_number }})">صفحه بعد</a></li>
+                                    {% if page_obj.next_page_number != paginator.num_pages %}
+                                        <li><a onclick="fillPageArticle({{ paginator.num_pages }})">صفحه آخر</a></li>
+                                    {% endif %}
+                                {% endif %}
+                                <br>
+                            </ul>
+                            <p class="text-paginator">
+                                صفحه {{ page_obj.number }} از {{ paginator.num_pages }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="left-sidebar">
+                        {% render_partial 'article_module.views.article_category_components' %}
+                        <h2>مرتب سازی بر اساس</h2>
+                        <div class="well">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio"
+                                           {% if request.GET.order == 'new' or not request.GET.order %}checked{% endif %}
+                                           name="order_article" value="new" onclick="fillOrderArticle('new')">
+                                    جدیدترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.order == 'old' %}checked{% endif %}
+                                           name="order_article" onclick="fillOrderArticle('old')" value="old">
+                                    قدیمی ترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.order == 'visited' %}checked{% endif %}
+                                           name="order_article" onclick="fillOrderArticle('visited')" value="visited">
+                                    پربازدیدترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.order == 'visit_30' %}checked{% endif %}
+                                           name="order_article" onclick="fillOrderArticle('visit_30')" value="visit_30">
+                                    پربازدیدترین در ماه گذشته
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.order == 'popular' %}checked{% endif %}
+                                           name="order_article" onclick="fillOrderArticle('popular')" value="popular">
+                                    محبوب ترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.order == 'hot' %}checked{% endif %}
+                                           name="order_article" onclick="fillOrderArticle('hot')" value="hot">
+                                    پر بحث ترین مقالات
+                                </label>
+                            </div>
+                        </div>
+                        <form action="" method="get" id="order_article">
+                            {% if 'search' in request.GET %}
+                                <input type="hidden" name="search" id="search_hi"
+                                       value="{% if request.GET.search %}{{ search }}{% endif %}">
+                            {% endif %}
+                            <input type="hidden" name="page" id="page" value="{{ page_obj.number }}">
+                            <input type="hidden" name="order" id="order"
+                                   value="{% if request.GET.order %}{{ request.GET.order }}{% else %}new{% endif %}">
+                        </form>
+                        <button class="btn btn-success btn-block" onclick="orderArticle()">مرتب سازی</button>
+                        <br>
+                        {% render_partial 'article_module.views.article_popular_component' %}
+                        <div class="shipping text-center"><!--shipping-->
+                            <img src="/static/images/home/shipping.jpg" alt=""/>
+                        </div><!--/shipping-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}

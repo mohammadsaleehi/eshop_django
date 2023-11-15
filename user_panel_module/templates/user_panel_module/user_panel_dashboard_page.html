@@ -1,0 +1,39 @@
+{% extends 'shared/_layout.html' %}
+{% load render_partial %}
+{% block title %}پنل کاربری{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                {% render_partial 'user_panel_module.views.user_panel_menu_component' %}
+            </div>
+            <div class="col-md-8">
+                <h4 class="text">نام
+                    : {{ user.first_name|default_if_none:'میتوانید در بخش "ویرایش اطلاعات" نام خود را وارد کنید' }} </h4>
+            </div>
+            <hr>
+            <div class="col-md-8">
+                <h4>نام خانوادگی
+                    : {{ user.last_name|default_if_none:'میتوانید در بخش "ویرایش اطلاعات" نام خانوادگی خود را وارد کنید' }}</h4>
+            </div>
+            <hr>
+            <div class="col-md-8">
+                <h4>ایمیل : {{ user.email }}</h4>
+            </div>
+            {% if user.address %}
+                <div class="col-md-8">
+                    <hr>
+                    <h4>آدرس شما : {{ user.address }}</h4>
+                </div>
+            {% endif %}
+            {% if user.about_user %}
+                <hr>
+                <div class="col-md-12">
+                    <h4>درباره شما : {{ user.about_user }}</h4>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

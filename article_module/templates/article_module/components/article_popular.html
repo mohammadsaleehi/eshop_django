@@ -1,0 +1,10 @@
+<h2>مقالات پربازید ماه</h2>
+<div class="well article_popular">
+    <ol >
+        {% for popular_article in popular_articles %}
+            <li>
+                <a class="text text-black collapsed" href="{% url 'article:articles_detail' popular_article.id popular_article.slug %}">{{ popular_article.title }}</a>
+            </li>
+        {% endfor %}
+    </ol>
+</div>

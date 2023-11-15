@@ -1,0 +1,55 @@
+.errorlist {
+    padding-right: 0 !important;
+}
+.btn-text-contact-us {
+    transition: background-color 0.3s;
+}
+.btn-text-contact-us:hover {
+    background-color: #fa6900;
+}
+.padding-category {
+    padding-right: 24px;
+}
+.curser-pointer {
+    cursor: pointer;
+}
+.banner-slider-border {
+    border-radius: 5px;
+}
+.link-product {
+    text-decoration: none;
+}
+#show_large_image_modal {
+    color: white;
+}
+.comment-product {
+    padding-right: 22px;
+}
+.comment-product-stya {
+    border-top: 1px solid #ffa50047;
+    padding: 9px 0 1px;
+}
+#a_css {
+    color: white;
+}
+
+.text-paginator {
+    padding-right: 20px;
+    margin-bottom: 15px;
+}
+.article_popular {
+    padding-right: 10px;
+    padding-top: 10px;
+}
+/*@font-face {*/
+/*    font-family: 'sahel';*/
+/*    src: url("../fonts/Sahel.woff");*/
+/*}*/
+.text-black {
+    color: #5b5a5a;
+    font-size: 13px;
+
+}
+.list-off-style{
+    list-style: none;
+}

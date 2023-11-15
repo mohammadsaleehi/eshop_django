@@ -1,0 +1,168 @@
+{% extends 'shared/_layout.html' %}
+{% load render_partial %}
+{% load poll_extreas %}
+{% block title %}لیست محصولات{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9 padding-right">
+                    {% if products %}
+                        <div class="features_items"><!--features_items-->
+                            <h2 class="title text-center">محصولات</h2>
+                            {% for product in products %}
+                                {% include 'product_module/includes/product_item_partial.html' with product=product col_size=4 %}
+                            {% endfor %}
+                            <div class="clearfix"></div>
+                            <ul class="pagination">
+
+                                {% if page_obj.has_previous %}
+                                    {% if page_obj.previous_page_number != 1 %}
+                                        <li><a class="curser-pointer"
+                                               onclick="fillPage(1)">صفحه اول</a></li>
+                                    {% endif %}
+                                    <li><a class="curser-pointer"
+                                           onclick="fillPage({{ page_obj.previous_page_number }})">صفحه قبل</a></li>
+                                {% endif %}
+
+                                {% for page in paginator.page_range %}
+                                    {% if page_obj.number == page %}
+                                        <li class="{% if page_obj.number == page %}active{% endif %}">
+                                            <a class="curser-pointer" onclick="fillPage({{ page }})">{{ page }}</a>
+                                        </li>
+                                    {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
+                                        <li class="{% if page_obj.number == page %}active{% endif %}">
+                                            <a class="curser-pointer" onclick="fillPage({{ page }})">{{ page }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li>
+                                        <a class="curser-pointer" onclick="fillPage({{ page_obj.next_page_number }})">
+                                            صفحه بعد
+                                        </a>
+                                    </li>
+                                    {% if paginator.num_pages != page_obj.next_page_number %}
+                                        <li>
+                                            <a class="curser-pointer" onclick="fillPage({{ paginator.num_pages }})">
+                                                صفحه آخر
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                            <p class="text-paginator">صفحه {{ page_obj.number }}از {{ paginator.num_pages }}</p>
+
+                        </div><!--features_items-->
+                    {% else %}
+                        <div class="alert alert-warning"><p>هیج محصولی یافت نشد.</p></div>
+                    {% endif %}
+                </div>
+
+                <!--/category-productsr-->
+                <div class="col-sm-3">
+                    <div class="left-sidebar">
+                        {% render_partial 'product_module.views.product_category_component' %}
+                        <div class="brands_products"><!--brands_products-->
+                            {% render_partial 'product_module.views.brand_component' %}
+                        </div><!--/brands_products-->
+
+                        <div class="price-range"><!--price-range-->
+                            <h2>فیلتـر قیمـت</h2>
+                            <div class="well">
+                                <input type="text" class="span2"
+                                       value="{{ start_price }},{{ end_price }}"
+                                       data-slider-min="0"
+                                       data-slider-max="{{ db_max_price }}"
+                                       data-slider-step="1000"
+                                       data-slider-value="[{{ start_price }},{{ end_price }}]"
+                                       id="sl2">
+                                <b>{{ db_max_price| price_como }}</b> <b class="pull-left">0 تومان</b>
+                            </div>
+                        </div><!--/price-range-->
+                        <h2>مرتب سازی بر اساس</h2>
+                        <div class="well">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio"
+                                           {% if request.GET.ord == 'new' or not request.GET.ord %}checked{% endif %}
+                                           name="from-fields" onclick="fillOrderBy('new')">
+                                    جدید ترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.ord == 'old' %}checked{% endif %}
+                                           name="from-fields" onclick="fillOrderBy('old')">
+                                    قدیمی ترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.ord == 'visit' %}checked{% endif %}
+                                           name="from-fields" onclick="fillOrderBy('visit')">
+                                    پربازدید ترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.ord == 'visit-30' %}checked{% endif %}
+                                           name="from-fields" onclick="fillOrderBy('visit-30')">
+                                    پربازدید ترین یک ماه گذشته
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.ord == 'seller' %}checked{% endif %}
+                                           name="from-fields" onclick="fillOrderBy('seller')">
+                                    پرفروش ترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.ord == 'expensive' %}checked{% endif %}
+                                           name="from-fields" onclick="fillOrderBy('expensive')">
+                                    گران ترین
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" {% if request.GET.ord == 'cheap' %}checked{% endif %}
+                                           name="from-fields" onclick="fillOrderBy('cheap')">
+                                    ارزان ترین
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <form action="" method="get" id="filter_price">
+                                {% if 'search' in request.GET %}
+                                    <input type="hidden" name="search" id="search_hi"
+                                           value="{% if 'search' in request.GET %}{{ search }}{% endif %}">
+                                {% endif %}
+                                <input type="hidden" name="ord" id="ord_id" value="{% if request.GET.ord %}{{ request.GET.ord }}{% else %}new{% endif %}">
+                                <input type="hidden" name="page" id="page" value="{{ page_obj.number }}">
+                                <input type="hidden" name="start_price" id="start_price" value="{{ start_price }}">
+                                <input type="hidden" name="end_price" id="end_price" value="{{ end_price }}">
+                            </form>
+                            <button class="btn btn-success btn-block" onclick="fillterProducts()">فیلتر</button>
+                        </div>
+                        <div class="shipping text-center"><!--shipping-->
+                            {% for banner in banners %}
+                                <a href="{{ banner.url }}">
+                                    <img src="{{ banner.image.url }}" alt="">
+                                </a>
+                            {% endfor %}
+
+                        </div><!--/shipping-->
+                        <br>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <input type="hidden" min="1" id="count" value="1"
+           class="search_box"/>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% load poll_extreas %}
+{% load thumbnail %}
+{% if order|length > 0 %}
+    <section id="cart_items">
+        <div class="container">
+            <div class="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li><a href="#">خانـه</a></li>
+                    <li class="active">پرداخت</li>
+                </ol>
+            </div><!--/breadcrums-->
+            <div class="table-responsive cart_info">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr class="cart_menu">
+                        <td class="image">کـالا</td>
+                        <td class="description">عنوان</td>
+                        <td class="price">قیمت</td>
+                        <td class="quantity">تعـداد</td>
+                        <td class="total">مجمـوع</td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for detail in order %}
+                        <tr>
+                            <td class="cart_product">
+                                <a href="{{ detail.product.get_absolute_url }}">
+                                    {% if detail.product.image %}
+                                        {% thumbnail detail.product.image '50x100' quality=90 as image_product %}
+                                            <img src="{{ image_product.url }}" alt="" width="{{ image_product.width }}">
+                                        {% endthumbnail %}
+                                    {% else %}
+                                        <img src='/static/images/product-details/1.jpg' width="50">
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td class="cart_description">
+                                <h4>
+                                    <a href="{{ detail.product.get_absolute_url }}">{{ detail.product.title|truncatechars:33 }}</a>
+                                </h4>
+                                <p>شناسـه : {{ detail.product.id }}</p>
+                            </td>
+                            <td class="cart_price">
+                                <p>{{ detail.product.price|price_como }}ومان</p>
+                            </td>
+                            <td class="cart_quantity">
+                                <div class="cart_quantity_button">
+                                    <a class="cart_quantity_up curser-pointer"
+                                       onclick="changeOrderDetailCount({{ detail.id }}, 'increase')"> + </a>
+                                    <input class="cart_quantity_input" type="text" name="quantity"
+                                           value="{{ detail.count }}"
+                                           autocomplete="off" size="2" disabled>
+                                    <a class="cart_quantity_down curser-pointer"
+                                       onclick="changeOrderDetailCount({{ detail.id }}, 'decrease')"> - </a>
+                                </div>
+                            </td>
+                            <td class="cart_total">
+                                <p class="cart_total_price">{{ detail.total_price|price_como }}ومان</p>
+                            </td>
+                            <td class="cart_delete">
+                                <a class="cart_quantity_delete" onclick="removeOrderDetail({{ detail.id }})"><i
+                                        class="fa fa-times"></i></a>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <section id="do_action">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="total_area">
+                        <ul>
+                            <li>مجمـوع سبـد خریـد <span>{{ sum|price_como }}ومان</span></li>
+                        </ul>
+                        <a class="btn btn-default check_out" href="{% url 'request_payment' %}">پرداخت</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% else %}
+    <div class="alert alert-warning container">هیچ محصولی در سبد خرید شما یافت نشد</div>
+{% endif %}

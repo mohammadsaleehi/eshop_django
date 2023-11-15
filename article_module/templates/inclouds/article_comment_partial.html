@@ -1,0 +1,66 @@
+{% load poll_extreas %}
+{% load thumbnail %}
+{% load static %}
+<h2>نظرات ({{ comments_count }})</h2>
+<ul class="media-list">
+    {% for comment in comments %}
+        <li class="media" id="single_comment_box_{{ comment.id }}">
+            <a class="pull-right" href="#">
+                {% if comment.user.avatar %}
+                    {% thumbnail comment.user.avatar '128x86' quality=90 crop='center' as im_profile %}
+                        <img class="media-object" src="{{ im_profile.url }}" alt=""
+                             height="{{ im_profile.height }}"
+                             width="{{ im_profile.width }}">
+                    {% endthumbnail %}
+                {% else %}
+                    <img class="media-object" src="{% static 'images/blog/Customer.jpg' %}"
+                         alt="">
+                {% endif %}
+            </a>
+            <div class="media-body">
+                <ul class="sinlge-post-meta">
+                    <li><i class="fa fa-user"></i>{{ comment.user|title }}</li>
+                    <li><i class="fa fa-clock-o"></i> {{ comment.created|jalali_time:'%H:%M' }}
+                    </li>
+                    <li>
+                        <i class="fa fa-calendar"></i>{{ comment.created|jalali_date:'%Y/%m/%d' }}
+                    </li>
+                </ul>
+                <p>{{ comment.text }}</p>
+                <a class="btn btn-primary" onclick="fillParentId({{ comment.id }})"><i class="fa fa-reply"></i>پاسـخ</a>
+            </div>
+        </li>
+        {% if comment.parent_comment.all %}
+            {% for parent_c in comment.parent_comment.all %}
+                <li class="media second-media" id="single_comment_box_{{ comment.id }}">
+                    <a class="pull-right" href="#">
+                        {% if parent_c.user.avatar %}
+                            {% thumbnail parent_c.user.avatar '128x86' quality=90 crop='center' as im_profile %}
+                                <img class="media-object" src="{{ im_profile.url }}" alt=""
+                                     height="{{ im_profile.height }}"
+                                     width="{{ im_profile.width }}">
+                            {% endthumbnail %}
+                        {% else %}
+                            <img class="media-object"
+                                 src="{% static 'images/blog/Customer.jpg' %}"
+                                 alt="">
+                        {% endif %}
+                    </a>
+                    <div class="media-body">
+                        <ul class="sinlge-post-meta">
+                            <li><i class="fa fa-user"></i>{{ parent_c.user|title }}</li>
+                            <li><i class="fa fa-clock-o"></i> {{ parent_c.created|jalali_time:'%H:%M' }}
+                            </li>
+                            <li>
+                                <i class="fa fa-calendar"></i>{{ parent_c.created|jalali_date:'%Y/%m/%d' }}
+                            </li>
+                        </ul>
+                        <p>{{ parent_c.text }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        {% endif %}
+    {% empty %}
+        <p class="alert alert-link text-warning">نظری وجود ندارد.</p>
+    {% endfor %}
+</ul>

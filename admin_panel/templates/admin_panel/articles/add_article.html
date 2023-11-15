@@ -1,0 +1,63 @@
+{% extends 'admin_panel/shared/_admin_layout.html' %}
+{% load widget_tweaks %}
+{% load crispy_forms_filters %}
+{% block title %}
+    اضافه کردن مقاله
+{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-xs-12">
+                <div class="widget flat radius-bordered">
+                    <div class="widget-header bg-blue">
+                        <span class="widget-caption">اضافه کردن مقاله</span>
+                    </div>
+                    <div class="widget-body">
+                        <div id="registration-form">
+                            <form role="form" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-title">
+                                    اضافه کردن مقاله
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.title|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.slug|as_crispy_field }}
+                                </div>
+                                <div class="col-md-12">
+                                    {{ form.media }}
+                                    {{ form.short_description|as_crispy_field }}
+                                </div>
+                                <div class="col-md-12">
+                                    {{ form.media }}
+                                    {{ form.text|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.selected_category|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.image|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" class="inverted" name="is_active">
+                                            <span class="text">فعال</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    {{ form.author|as_crispy_field }}
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-primary">ثبت</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'shared/_layout.html' %}
+
+{% block title %}تماس با ما{% endblock %}
+
+{% block content %}
+    <div id="contact-page" class="container">
+        <div class="bg">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="contact-form">
+                        <h2 class="title text-center">با ما در ارتباط باشیـد</h2>
+                        <div class="status alert alert-success" style="display: none"></div>
+                        <form id="main-contact-form" class="contact-form row" method="post"
+                              action="{% url 'create_profile_page' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- /# -->
+                            {{ form }}
+                            <div class="form-group col-md-12">
+                                <button type="submit" class="btn btn-text-contact-us btn-primary pull-right">ارسال
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="contact-info">
+                        <h2 class="title text-center">اطلاعات تماس</h2>
+                        <address>
+                            <p>گـروه محمد 1614</p>
+                            <p>ایـران - البرز - گوهردشت</p>
+                            <p>مجتـمع تجـاری ... - طبـقه 2 - پلاک 5 </p>
+                            <p>تلفن تماس : .. .. .. ..</p>
+                            <p>تلفن پشتیبانی : .. .. .. ..</p>
+                            <p style="font-family: tahoma,serif;">ایمیـل : ...</p>
+                        </address>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

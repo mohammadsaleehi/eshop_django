@@ -1,0 +1,23 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>404</title>
+</head>
+<body>
+<div class="container text-center">
+    <div class="logo-404">
+        <a href="{% url 'home_page' %}"><img src="{% static 'images/home/logo.png' %}" alt=""/></a>
+    </div>
+    <div class="content-404">
+        <img src="{% static 'images/404/404.png' %}" class="img-responsive" alt=""/>
+        <h1><b>متأسفانـه</b> صفحه مورد نظـر شما یافت نشد!</h1>
+        <h2><a href="{% url 'home_page' %}">برو به صفحـه اصلی</a></h2>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{% load poll_extreas %}
+<h4 id="comment_scrol">نظرات ({{ comments|length }})</h4>
+{% for comment in comments %}
+    <div class="col-sm-12 comment-product-styal">
+        <div>
+            <hr>
+            <ul>
+                <li><a href=""><i class="fa fa-user"></i>{{ comment.user }}</a></li>
+                <li><a href=""><i
+                        class="fa fa-clock-o"></i>{{ comment.created | jalali_time:'%H:%M' }}
+                </a></li>
+                <li><a href=""><i
+                        class="fa fa-calendar-o"></i>{{ comment.created | jalali_date:'%Y/%m/%d' }}
+                </a></li>
+            </ul>
+            <p class="comment-product">{{ comment.text }}</p>
+        </div>
+    </div>
+{% empty %}
+    <hr>
+    <p class="alert alert-warning">کامنتی یافت نشد.</p>
+{% endfor %}
+{% if request.user.is_authenticated %}
+    <hr>
+    <p><b>نظـر خود را بنویسیـد</b></p>
+
+    <form action="" method="get">
+        {% csrf_token %}
+        <textarea class="text-area" name="message" id="commentText"></textarea>
+        <a class="btn btn-primary" onclick="sendProductComment({{ product_id }})">ارسال
+            نظر</a>
+    </form>
+{% else %}
+    <hr>
+    <p class="alert alert-danger">برای کامنت گذاشتن باید <a href="{% url 'account:login_page' %}">لاگین</a> کنید</p>
+{% endif %}

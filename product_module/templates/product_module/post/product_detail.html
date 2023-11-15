@@ -1,0 +1,222 @@
+{% extends 'shared/_layout.html' %}
+{% load render_partial %}
+{% load thumbnail %}
+{% load poll_extreas %}
+{% load static %}
+{% block title %}{{ product.title }}| جزییات محصول{% endblock %}
+
+{% block header_refernces %}
+    <link rel="stylesheet" type="text/css" href="{% static 'libb/image-lightbox/css/lightbox.min.css' %}">
+{% endblock %}
+
+{% block footer_refernces %}
+    <script src="{% static 'libb/image-lightbox/js/lightbox.min.js' %}"></script>
+
+    {#    <link rel="stylesheet" href="/static/libb/image-lightbox/js/lightbox-plus-jquery.min.js">#}
+{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9 padding-right">
+                    <div class="product-details"><!--product-details-->
+                        <div class="col-sm-5">
+                            <div class="view-product">
+                                {% if product.image %}
+                                    {#                                    {% thumbnail product.image '330x380' qualty=100 as am %}#}
+                                    <img id="main_image" src="{{ product.image.url }}" width="330" height="380"
+                                         alt="{{ product.title }}" importance="high" />
+                                    {#                                    {% endthumbnail %}#}
+                                {% else %}
+                                    <img id="main_image" src="/static/images/product-details/1.jpg" width="330"
+                                         height="381" alt=""/>
+                                {% endif %}
+                                <h3>
+                                    <a id="show_large_image_modal" href="{{ product.get_image_url|default_if_none:"/static/images/product-details/1.jpg" }}"
+                                       data-lightbox="product-image">
+                                        بزرگنمایـی
+                                    </a>
+                                </h3>
+                            </div>
+
+                            <div id="similar-product" class="carousel slide" data-ride="carousel">
+
+                                <!-- Wrapper for slides -->
+
+                                <div class="carousel-inner">
+
+
+                                    {% for group in product_galleries_group %}
+                                        <div class="item {% if forloop.first %}active{% endif %}">
+                                            {% for gallery in group %}
+                                                {% thumbnail gallery.image '90x90' quality=70 crop='center' as image %}
+                                                    <a onclick="showLargeImage('{{ gallery.image.url }}')">
+                                                        <img src="{{ image.url }}" alt="" width="90" height="90">
+                                                    </a>
+                                                {% endthumbnail %}
+                                            {% endfor %}
+
+                                        </div>
+                                    {% endfor %}
+
+
+                                </div><!-- Controls -->
+                                <a class="right item-control" href="#similar-product" data-slide="next">
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                                <a class="left item-control" href="#similar-product" data-slide="prev">
+                                    <i class="fa fa-angle-left"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="product-information"><!--/product-information-->
+                                <img src="/static/images/product-details/new.png" class="arrival" alt=""/>
+                                <div>
+                                    <h2>{{ product.title }}</h2>
+                                    <p>شناسـه : {{ product.id }}</p>
+                                </div>
+                                <div>
+									<span>
+										<span>قیمت : {{ product.price | price_como }}</span>
+									</span>
+                                    <span>
+                                        <label>تعداد :</label>
+                                        <input type="number" min="1" id="count" value="1"
+                                               class="search_box"/>
+                                        <button onclick="addProductToOrder({{ product.id }})"
+                                                class="btn btn-default cart">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            افزودن به سبد خرید
+                                        </button>
+									</span>
+                                </div>
+                                <div>
+                                    <p><b>موجـودی :</b> در انبـار موجود می باشد</p>
+                                    {% if product.brand %}
+                                        <p><b>برنـد :</b> {{ product.brand }} </p>
+                                    {% endif %}
+                                </div>
+                            </div><!--/product-information-->
+                        </div>
+                    </div><!--/product-details-->
+
+                    <div class="category-tab shop-details-tab"><!--category-tab-->
+                        <div class="col-sm-12">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#details" data-toggle="tab">جزئیات</a></li>
+                                <li><a href="#reviews" data-toggle="tab">نظرات</a></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade active in" id="details">
+                                <div class="col-md-12 dtailul">
+                                    {{ product.description | safe | linebreaks }}
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="reviews">
+                                <h4 id="comment_scrol">نظرات ({{ comments|length }})</h4>
+                                {% for comment in comments %}
+                                    <div class="col-sm-12">
+                                        <div>
+                                            <hr>
+                                            <ul>
+                                                <li><a href=""><i class="fa fa-user"></i>{{ comment.user }}</a></li>
+                                                <li><a href=""><i
+                                                        class="fa fa-clock-o"></i>{{ comment.created | jalali_time:'%H:%M' }}
+                                                </a></li>
+                                                <li><a href=""><i
+                                                        class="fa fa-calendar-o"></i>{{ comment.created | jalali_date:'%Y/%m/%d' }}
+                                                </a></li>
+                                            </ul>
+                                            <p class="comment-product">{{ comment.text }}</p>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <hr>
+                                    <p class="alert alert-warning">کامنتی یافت نشد.</p>
+                                {% endfor %}
+                                {% if request.user.is_authenticated %}
+                                    <hr>
+                                    <p><b>نظـر خود را بنویسیـد</b></p>
+
+                                    <form action="" method="get">
+                                        {% csrf_token %}
+                                        <textarea class="text-area" name="message" id="commentText"></textarea>
+                                        <a class="btn btn-primary" onclick="sendProductComment({{ product.id }})">ارسال
+                                            نظر</a>
+                                    </form>
+                                {% else %}
+                                    <hr>
+                                    {% url 'account:login_page' as login %}
+                                    {% with url_product=product.get_absolute_url %}
+                                        <p class="alert alert-danger">برای کامنت گذاشتن باید
+                                            <a class="alert-link" href="{% login_url_product_detail login url_product %}">لاگین</a> کنید
+                                        </p>
+                                    {% endwith %}
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+                    </div><!--/category-tab-->
+                    {% if related_product|length > 0 %}
+                        <div class="recommended_items"><!--recommended_items-->
+                            <h2 class="title text-center">محصولات مرتبط</h2>
+                            <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    {% for group in related_product %}
+                                        <div class="item {% if forloop.first %}active{% endif %}">
+                                            {% for product in group %}
+                                                {% include 'product_module/includes/product_item_partial.html' with product=product col_size=4 %}
+                                            {% endfor %}
+                                        </div>
+
+                                    {% endfor %}
+                                </div>
+                                {% if related_product|length > 1 %}
+                                    <a class="left recommended-item-control" href="#recommended-item-carousel"
+                                       data-slide="prev">
+                                        <i class="fa fa-angle-left"></i>
+                                    </a>
+                                    <a class="right recommended-item-control" href="#recommended-item-carousel"
+                                       data-slide="next">
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                {% endif %}
+
+                            </div><!--/recommended_items-->
+                        </div>
+                    {% endif %}
+
+
+                </div>
+                <div class="col-sm-3">
+                    <div class="left-sidebar">
+                        {% render_partial 'product_module.views.product_category_component' %}
+                        <div class="brands_products"><!--brands_products-->
+                            {% render_partial 'product_module.views.brand_component' %}
+                        </div>
+
+                        <div class="shipping text-center"><!--shipping-->
+                            {% for banner in banners %}
+                                <a href="{{ banner.url }}">
+                                    <img src="{{ banner.image.url }}" alt="">
+                                </a>
+                                <br>
+
+                            {% endfor %}
+
+                        </div><!--/shipping-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <input type="hidden" min="1" id="count" value="1"
+           class="search_box"/>
+{% endblock %}

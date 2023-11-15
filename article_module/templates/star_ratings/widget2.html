@@ -1,0 +1,26 @@
+{% extends "star_ratings/base_star.html" %}
+{% block rating_detail %}
+    {% if not user.is_authenticated %}
+        <div><small>برای امتیاز دادن باید وارد شوید</small></div>
+    {% else %}
+        <div class="">
+            {% block rating_average %}
+                <div>
+                    <abbr class="star-ratings-rating-average">
+                    میانگین امتیازات مقاله : <span class='star-ratings-rating-value'>{{ rating.average|floatformat:"-2" }}</span>
+                    </abbr>
+
+                    <abbr class="star-ratings-rating-count">
+                     &emsp; | &emsp;
+                    تعداد افرادی که رای دادن : <span class='star-ratings-rating-value'>{{ rating.count }}</span>
+                    </abbr>
+                    <abbr class="star-ratings-rating-user">
+                     &emsp; | &emsp;
+                     رای شما به این مقاله : <span class='star-ratings-rating-value' data-when-null="Not rated"> {% if user_rating %}{{ user_rating.score }}{% else %}<abbr class="text text-muted">شما به این مقاله رای ندادید می توانید رای بدهید</abbr>
+                    {% endif %}</span>
+                    </abbr>
+                </div>
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}

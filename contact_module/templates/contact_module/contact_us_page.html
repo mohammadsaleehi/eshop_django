@@ -1,0 +1,98 @@
+{% extends 'shared/_layout.html' %}
+
+{% block title %}تماس با ما{% endblock %}
+
+{% block content %}
+    <div id="contact-page" class="container">
+        <div class="bg">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="contact-form">
+                        <h2 class="title text-center">با ما در ارتباط باشیـد</h2>
+                        <div class="status alert alert-success" style="display: none"></div>
+                        <form id="main-contact-form" class="contact-form row" method="post">
+                            {% csrf_token %}
+
+                            {% comment %}{% for field in form %}
+                            <div class="form-group col-md-12">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                        {% endfor %}{% endcomment %}
+
+                            <div class="form-group col-md-6">
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+                                <div class="alert-danger">
+                                    {{ form.email.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ form.full_name.label_tag }}
+                                {{ form.full_name }}
+                                <div class="alert-danger">
+                                    {{ form.full_name.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                {{ form.title.label_tag }}
+                                {{ form.title }}
+                                <div class="alert-danger">
+                                    {{ form.title.errors }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                {{ form.message.label_tag }}
+                                {{ form.message }}
+                                <div class="alert-danger">
+                                    {{ form.message.errors }}
+                                </div>
+                            </div>
+                            {#                        <div class="form-group col-md-6">#}
+                            {% comment %}                            <input type="text" name="full_name" class="form-control" required="required"
+                                   placeholder="نام">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="email" name="email" class="form-control" required="required"
+                                   placeholder="ایمیـل">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" name="subject" class="form-control" required="required"
+                                   placeholder="موضـوع">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <textarea name="message" id="message" required class="form-control" rows="8"
+                                      placeholder="پیغـام شمـا"></textarea>
+                        </div>{% endcomment %}
+                            <div class="form-group col-md-12">
+                                {#                            <input type="submit" name="submit" class="btn btn-primary pull-right" value="ارسـال">#}
+                                <button type="submit" class="btn btn-text-contact-us btn-primary pull-right">ارسال
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="contact-info">
+                        <h2 class="title text-center">اطلاعات تماس</h2>
+                        <address>
+                            <p>{{ site_setting.site_name }}</p>
+                            {% comment %}<p><ایـران - البرز - گوهردشت/p>
+                        <p>مجتـمع تجـاری ... - طبـقه 2 - پلاک 5 </p>
+                        {% endcomment %}
+                            <p>{{ site_setting.address|linebreaks }}</p>
+                            <p>تلفن تماس : {{ site_setting.phone }}</p>
+                            {% if site_setting.fax %}
+                                <p>فکس : {{ site_setting.fax }}</p>
+                            {% endif %}
+                            {% if site_setting.email %}
+                                <p style="font-family: 'tahoma', serif;">ایمیـل : {{ site_setting.email }}</p>
+                            {% endif %}
+                        </address>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

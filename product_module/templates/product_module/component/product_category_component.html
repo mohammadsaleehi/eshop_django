@@ -1,0 +1,38 @@
+<h2>دسته بندی محصولات</h2>
+<div class="panel-group category-products" id="accordian">
+    {% for cate in category %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    {% if cate.product_category_parent.all %}
+                        <a data-toggle="collapse" data-parent="#accordian" href="#{{ cate.url_title }}">
+                            <span class="badge pull-right"><i class="fa fa-plus"></i></span>
+                            {{ cate.title }}
+                        </a>
+                    {% endif %}
+                </h4>
+            </div>
+            {% if cate.product_category_parent.all %}
+                <div id="{{ cate.url_title }}" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <ul>
+                            {% for product_cate in cate.product_category_parent.all %}
+                                <li>
+                                    <a href="{% url 'cat-product-list-category' product_cate.url_title %}">{{ product_cate.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% else %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title padding-category">
+                            <a href="{% url 'cat-product-list-category' cate.url_title %}">{{ cate.title }}</a>
+                        </h4>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div><!--/category-productsr-->

@@ -1,0 +1,16 @@
+
+a:hover::before {
+    transform: scale(1);
+    transition: 0.5s;
+    transition-delay: 0.8s;
+}
+
+a::after {
+    content: '\f303';
+    font-weight: 100;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: -81px;
+    left: 0;
+}
