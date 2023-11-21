@@ -2,7 +2,6 @@
 
 Hello in this is first project me.im happy
 
----
 
 ## How to tun
 
