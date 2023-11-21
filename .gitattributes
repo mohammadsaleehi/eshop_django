@@ -1,2 +1,2 @@
-$ cat .gitattributes
+* linguist-vendored
 *.py linguist-vendored=true
