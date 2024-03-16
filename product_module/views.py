@@ -73,8 +73,7 @@ class ProductListView(ListView):
 		context['db_max_price'] = db_max_price
 		context['start_price'] = self.request.GET.get('start_price') or 0
 		context['end_price'] = self.request.GET.get('end_price') or db_max_price
-		context['banners'] = SiteBanner.objects.filter(is_active=True,
-													   position__iexact=SiteBanner.SiteBannerPosition.product_list)
+		context['banners'] = SiteBanner.objects.filter(is_active=True,							position__iexact=SiteBanner.SiteBannerPosition.product_list)
 		return context
 
 
