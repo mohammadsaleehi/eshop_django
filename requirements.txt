@@ -46,4 +46,3 @@ typing_extensions==4.7.1
 tzdata==2023.3
 urllib3==2.0.4
 webencodings==0.5.1
-zeep==4.2.1
